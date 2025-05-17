@@ -1,15 +1,8 @@
-import { Schema, model, Document, Types } from 'mongoose'
+import mongoose from "mongoose";
+const schema = new mongoose.Schema({
+  staffId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  candidateId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  status: { type: String, enum: ["interested", "not_interested", "maybe"] }
+}, { timestamps: true });
 
-export interface ISwipe extends Document {
-  staffId: Types.ObjectId
-  candidateId: Types.ObjectId
-  status: 'interested' | 'not_interested' | 'maybe'
-}
-
-const swipeSchema = new Schema<ISwipe>({
-  staffId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  candidateId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  status: { type: String, enum: ['interested', 'not_interested', 'maybe'], required: true }
-}, { timestamps: true })
-
-export default model<ISwipe>('Swipe', swipeSchema)
+export default mongoose.model("Swipe", schema);

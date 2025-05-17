@@ -1,61 +1,20 @@
-# Job Pool Application (MERN Skeleton)
+# Job‑Pool — MERN Starter (Full)
 
-This is a starter code‑base that matches the **Job Pool** requirements and the Figma design you provided.
+A ready‑to‑hack candidate‑first job board with swipe approvals, chat and admin dashboard.
 
-## Quick Start (Local)
+## Quick start (Docker)
 
 ```bash
-git clone <repo>
-cd job-pool
-cp .env.example .env             # put real secrets
-docker compose up -d             # starts server, client, mongo
+cp .env.example .env   # fill secrets
+docker compose up --build
 ```
 
-Open:
+Services:
 
-* Client – <http://localhost:5173>
-* Server health – <http://localhost:5000/api/health>
+| Service | Port | Description |
+|---------|------|-------------|
+| client  | 5173 | React SPA served by Vite |
+| server  | 5000 | Express + Socket.IO API |
+| mongo   | 27017| MongoDB instance (persisted in ./data/db) |
 
-## Tech Stack
-
-* React 18 + Vite + TypeScript + TailwindCSS
-* Express 4 + Node 18 + TypeScript
-* Socket.IO for real‑time notifications / chat
-* MongoDB (you can point to Atlas or local)
-* Docker Compose + GitHub Actions CI (workflow stub)
-
-## Folders
-
-```
-job-pool/
-  client/   # React SPA
-  server/   # Node / Express API
-```
-
-The MongoDB connection is a stub — wire up `MONGO_URI` in `.env`.
-
-## Scripts
-
-### Client
-
-| NPM Script | What it does                |
-|------------|----------------------------|
-| `npm run dev` | Vite dev server at `5173` |
-| `npm run build` | Production build |
-| `npm run preview` | Preview built site |
-
-### Server
-
-| NPM Script | What it does |
-|------------|--------------|
-| `npm run dev` | ts‑node‑dev hot‑reload API |
-| `npm run build` | Compile TypeScript to `dist/` |
-| `npm start` | Run compiled JS |
-
----
-
-### Next Steps
-
-* Finish controller logic (`server/src/controllers/*`).
-* Flesh out client pages with real API calls & socket hooks.
-* Add tests in `server/src/tests/` and `client/src/__tests__/`.
+Visit <http://localhost:5173> to start.

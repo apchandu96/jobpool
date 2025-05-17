@@ -1,37 +1,14 @@
-import { Schema, model, Document, Types } from 'mongoose'
-
-export interface IProfile extends Document {
-  userId: Types.ObjectId
-  headline: string
-  bio: string
-  location: string
-  availability: string
-  salaryExpectation: string
-  skills: string[]
-  industries: string[]
-  workHistory: Array<Record<string, any>>
-  education: Array<Record<string, any>>
-  portfolioLinks: string[]
-  profilePicUrl: string
-  completion: number
-}
-
-const profileSchema = new Schema<IProfile>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  headline: String,
-  bio: String,
-  location: String,
-  availability: String,
-  salaryExpectation: String,
-  skills: [String],
-  industries: [String],
-  workHistory: [Schema.Types.Mixed],
-  education: [Schema.Types.Mixed],
+import mongoose from "mongoose";
+const schema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  headline: String, bio: String, location: String,
+  availability: String, salaryExpectation: String,
+  skills: [String], industries: [String],
+  workHistory: [{ company: String, role: String, start: Date, end: Date }],
+  education: [{ school: String, degree: String, year: Number }],
   portfolioLinks: [String],
   profilePicUrl: String,
-  completion: Number
-}, { timestamps: true })
+  completion: { type: Number, default: 0 }
+}, { timestamps: true });
 
-profileSchema.index({ skills: 'text', industries: 'text', location: 'text' })
-
-export default model<IProfile>('Profile', profileSchema)
+export default mongoose.model("Profile", schema);

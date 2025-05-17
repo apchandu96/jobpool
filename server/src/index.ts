@@ -1,30 +1,37 @@
-import http from 'http'
-import app from './app'
-import { Server as SocketIOServer } from 'socket.io'
-import { connectDB } from './config/db'
-import dotenv from 'dotenv'
+import express from "express";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
-dotenv.config()
+import authRoutes from "./routes/authRoutes";
+import profileRoutes from "./routes/profileRoutes";
+import swipeRoutes from "./routes/swipeRoutes";
+import chatRoutes from "./routes/chatRoutes";
+import { registerSocketHandlers } from "./sockets";
 
-const PORT = process.env.PORT || 5000
+dotenv.config();
+const app = express();
+const server = http.createServer(app);
+const io = new SocketIOServer(server, { cors: { origin: "*" } });
 
-const httpServer = http.createServer(app)
-const io = new SocketIOServer(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true
-  }
-})
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI || "";
 
-io.on('connection', (socket) => {
-  console.log('Socket connected:', socket.id)
-  socket.on('disconnect', () => console.log('Socket disconnected:', socket.id))
-})
+app.use(cors());
+app.use(express.json());
 
-if (process.env.MONGO_URI) {
-  connectDB().catch((err) => console.error('MongoDB connection error:', err))
-}
+app.use("/api/auth", authRoutes);
+app.use("/api/profiles", profileRoutes);
+app.use("/api/swipes", swipeRoutes);
+app.use("/api/chats", chatRoutes);
 
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+registerSocketHandlers(io);
+
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log("Mongo connected");
+    server.listen(PORT, () => console.log(`Server on ${PORT}`));
+  })
+  .catch(err => { console.error(err); process.exit(1); });

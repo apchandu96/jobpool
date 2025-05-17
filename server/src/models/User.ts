@@ -1,19 +1,16 @@
-import { Schema, model, Document } from 'mongoose'
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
-export interface IUser extends Document {
-  email: string
-  passwordHash: string
-  role: 'candidate' | 'staff' | 'admin'
-  oauthProvider?: string
-  oauthId?: string
-}
-
-const userSchema = new Schema<IUser>({
-  email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
-  role: { type: String, enum: ['candidate', 'staff', 'admin'], default: 'candidate' },
+const schema = new mongoose.Schema({
+  email: { type: String, unique: true, required: true },
+  passwordHash: String,
+  role: { type: String, enum: ["candidate", "staff", "admin"], default: "candidate" },
   oauthProvider: String,
   oauthId: String
-}, { timestamps: true })
+}, { timestamps: true });
 
-export default model<IUser>('User', userSchema)
+schema.methods.comparePassword = function(pwd: string) {
+  return bcrypt.compare(pwd, this.passwordHash);
+};
+
+export default mongoose.model("User", schema);
